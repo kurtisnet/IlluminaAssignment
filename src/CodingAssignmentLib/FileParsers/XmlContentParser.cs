@@ -1,7 +1,7 @@
 ﻿using CodingAssignmentLib.Abstractions;
 using System.Xml.Serialization;
 
-namespace CodingAssignmentLib
+namespace CodingAssignmentLib.FileParsers
 {
     /// <summary>
     /// Handles the parsing of a given .xml file as a collection of <see cref="Data"/>.

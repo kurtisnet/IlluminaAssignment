@@ -1,6 +1,6 @@
 ﻿using CodingAssignmentLib.Abstractions;
 
-namespace CodingAssignmentLib;
+namespace CodingAssignmentLib.FileParsers;
 
 /// <summary>
 /// Handles the parsing of a given .csv file as a collection of <see cref="Data"/>.

@@ -1,6 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using System.IO.Abstractions;
 using CodingAssignmentApp;
 using CodingAssignmentLib;
 using CodingAssignmentLib.Abstractions;
@@ -41,7 +40,31 @@ void Display()
     Console.WriteLine("Enter the name of the file with its extension to display its content:");
 
     var fileName = Console.ReadLine()!;
-    var dataList = GetDataFromFile(fileName);
+
+    // Find if the file exists with the given name.
+    var filePath = FolderUtility.FindFileInDirectory(
+       Path.Combine(AppContext.BaseDirectory, Constants.DataDirectoryName),
+       fileName);
+
+    if (filePath == null)
+    {
+        Console.WriteLine($"The file with the given name {fileName} is not found in the " +
+           $"{Constants.DataDirectoryName} directory.");
+        return;
+    }
+
+    IEnumerable<Data>? dataList;
+
+    try
+    {
+        dataList = FileParsingHandler.GetDataFromFile(filePath);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine("An unexpected error has been encountered while parsing the file. The following " +
+            $"error details might be helpful.\n{ex.Message}");
+        return;
+    }
 
     if (dataList != null)
     {
@@ -60,46 +83,6 @@ void Display()
     }
 }
 
-IEnumerable<Data>? GetDataFromFile(string fileName)
-{
-    var fileUtility = new FileUtility(
-        new FileSystem(),
-        Path.Combine(AppContext.BaseDirectory, Constants.DataDirectoryName));
-
-    IEnumerable<Data>? dataList = null;
-
-    try
-    {
-        var fileContent = fileUtility.GetContent(fileName);
-
-        switch (fileUtility.GetExtension(fileName))
-        {
-            case Constants.Csv:
-                dataList = new CsvContentParser().Parse(fileContent);
-                break;
-
-            case Constants.Json:
-                dataList = new JsonContentParser().Parse(fileContent);
-                break;
-
-            case Constants.Xml:
-                dataList = new XmlContentParser().Parse(fileContent);
-                break;
-
-            default:
-                Console.WriteLine("This file type is not supported.");
-                return null;
-        }
-    }
-    catch (FileNotFoundException)
-    {
-        Console.WriteLine($"The file with the given name {fileName} is not found in the " +
-            $"{Constants.DataDirectoryName} directory.");
-    }
-
-    return dataList;
-}
-
 /// <summary>
 /// Feature to allow the user to search for a key value either partially or fully across files in the data
 /// directory in a non case-sensitive manner.
@@ -107,4 +90,25 @@ IEnumerable<Data>? GetDataFromFile(string fileName)
 void Search()
 {
     Console.WriteLine("Enter the key to search.");
+    var keyword = Console.ReadLine()!;
+
+    var matchingFilesDict = KeywordFinder.FindFilesWithKeyword(
+        Path.Combine(AppContext.BaseDirectory, Constants.DataDirectoryName),
+        keyword);
+
+    if (matchingFilesDict.Count == 0)
+    {
+        foreach (var kvp in matchingFilesDict)
+        {
+            var trimmedFilePath = kvp.Key.Replace(AppContext.BaseDirectory, string.Empty);
+            foreach (var matchingData in kvp.Value)
+            {
+                Console.WriteLine($"Key:{matchingData.Key} Value:{matchingData.Value} FileName:{trimmedFilePath}");
+            }
+        }
+    }
+    else
+    {
+        Console.WriteLine("The given keyword is not found in any of the files.");
+    }
 }

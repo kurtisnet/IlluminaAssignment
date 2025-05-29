@@ -1,5 +1,6 @@
 ﻿using CodingAssignmentLib;
 using CodingAssignmentLib.Abstractions;
+using CodingAssignmentLib.FileParsers;
 using System;
 using System.Collections.Generic;
 using System.IO.Abstractions;
@@ -17,9 +18,7 @@ namespace CodingAssignmentTests
 
         public XMLContentParserTests()
         {
-            _fileUtility = new FileUtility(
-                new FileSystem(),
-                Path.Combine(AppContext.BaseDirectory, Constants.TestFilesDirectoryName));
+            _fileUtility = new FileUtility(new FileSystem());
         }
 
         [SetUp]
@@ -29,9 +28,14 @@ namespace CodingAssignmentTests
         }
 
         [Test]
-        public void Parse_ReturnsData()
+        [TestCase("TestXMLFile.xml")]
+        public void Parse_ReturnsData(string testFileName)
         {
-            var content = _fileUtility.GetContent("TestXMLFile.xml");
+            var xmlTestFile = FolderUtility.FindFileInDirectory(
+               Path.Combine(AppContext.BaseDirectory, Constants.TestFilesDirectoryName),
+               testFileName);
+
+            var content = _fileUtility.GetContent(xmlTestFile);
             var expectedList = new List<Data>()
             {
                 new ("a", "b"),

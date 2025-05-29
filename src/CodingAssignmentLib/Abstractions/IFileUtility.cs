@@ -15,7 +15,7 @@ public interface IFileUtility
     /// <summary>
     /// Reads and returns the raw string of the contents of the given file.
     /// </summary>
-    /// <param name="fileName"> The name of the file to be read. </param>
+    /// <param name="filePath"> The full path to the file to be read. </param>
     /// <returns> Raw string of the given file. </returns>
-    string GetContent(string fileName);
+    string GetContent(string filePath);
 }

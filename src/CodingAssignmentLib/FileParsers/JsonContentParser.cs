@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace CodingAssignmentLib
+namespace CodingAssignmentLib.FileParsers
 {
     // <summary>
     /// Handles the parsing of a given .json file as a collection of <see cref="Data"/>.
