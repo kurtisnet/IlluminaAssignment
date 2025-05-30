@@ -13,13 +13,18 @@ namespace CodingAssignmentLib.FileParsers
         /// </summary>
         /// <param name="content"> The contents of the .xml file. </param>
         /// <returns> Parsed data from the .xml file as a collection of <see cref="Data"/>. </returns>
-        public IEnumerable<Data> Parse(string content)
+        public IEnumerable<Data>? Parse(string content)
         {
+            if (string.IsNullOrWhiteSpace(content))
+            {
+                return null;
+            }
+
             var xmlSerializer = new XmlSerializer(typeof(List<Data>), new XmlRootAttribute("Datas"));
 
             using (var stringReader = new StringReader(content))
             {
-                return (List<Data>)xmlSerializer.Deserialize(stringReader);
+                return (IEnumerable<Data>?)xmlSerializer.Deserialize(stringReader);
             }
         }
     }

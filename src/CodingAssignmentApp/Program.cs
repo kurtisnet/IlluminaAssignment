@@ -3,6 +3,7 @@
 using CodingAssignmentApp;
 using CodingAssignmentLib;
 using CodingAssignmentLib.Abstractions;
+using System.IO.Abstractions;
 
 Console.WriteLine("Coding Assignment!");
 
@@ -37,7 +38,7 @@ do
 /// </summary>
 void Display()
 {
-    Console.WriteLine("Enter the name of the file with its extension to display its content:");
+    Console.WriteLine("Enter just the name of the file with its extension to display its content:");
 
     var fileName = Console.ReadLine()!;
 
@@ -54,10 +55,11 @@ void Display()
     }
 
     IEnumerable<Data>? dataList;
+    var fileParsingHandler = new FileParsingHandler(filePath, new FileUtility(new FileSystem()));
 
     try
     {
-        dataList = FileParsingHandler.GetDataFromFile(filePath);
+        dataList = fileParsingHandler.GetDataFromFile();
     }
     catch (Exception ex)
     {
@@ -92,12 +94,12 @@ void Search()
     Console.WriteLine("Enter the key to search.");
     var keyword = Console.ReadLine()!;
 
-    var matchingFilesDict = KeywordFinder.FindFilesWithKeyword(
-        Path.Combine(AppContext.BaseDirectory, Constants.DataDirectoryName),
-        keyword);
+    var keywordFinder = new KeywordFinder(Path.Combine(AppContext.BaseDirectory, Constants.DataDirectoryName));
+    var matchingFilesDict = keywordFinder.FindFilesWithKeyword(keyword);
 
-    if (matchingFilesDict.Count == 0)
+    if (matchingFilesDict.Count != 0)
     {
+        Console.WriteLine();
         foreach (var kvp in matchingFilesDict)
         {
             var trimmedFilePath = kvp.Key.Replace(AppContext.BaseDirectory, string.Empty);

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace CodingAssignmentLib.Abstractions
 {
@@ -28,6 +23,11 @@ namespace CodingAssignmentLib.Abstractions
             return firstObj.Key == secondObj.Key && firstObj.Value == secondObj.Value;
         }
 
+        /// <summary>
+        /// Gets the hash code.
+        /// </summary>
+        /// <param name="obj"> The object whose hash code is needed. </param>
+        /// <returns> The given object's hash code. </returns>
         public int GetHashCode([DisallowNull] Data obj)
         {
             return obj.GetHashCode();

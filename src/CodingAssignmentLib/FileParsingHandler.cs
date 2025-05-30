@@ -1,28 +1,35 @@
 ﻿using CodingAssignmentLib.Abstractions;
 using CodingAssignmentLib.FileParsers;
-using System.IO.Abstractions;
 
 namespace CodingAssignmentLib
 {
     /// <summary>
     /// Class handling appropriate file parsing depending on the given file's extension.
     /// </summary>
-    public static class FileParsingHandler
+    public class FileParsingHandler : FileParsingHandlerBase
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileParsingHandler"/> class.
+        /// </summary>
+        /// <param name="filePath"> The full path to the file to be parsed. </param>
+        /// <param name="fileUtility"> The file utility for file IO operations. </param>
+        public FileParsingHandler(string filePath, IFileUtility fileUtility) : base(filePath, fileUtility)
+        {
+        }
+
         /// <summary>
         /// Parses the given file and returns its data as a collection of <see cref="Data"/>.
         /// </summary>
         /// <param name="filePath"> Full path to the file to be parsed. </param>
         /// <returns> Collection of <see cref="Data"/> obtained from parsing the given file. </returns>
         /// <exception cref="ArgumentException"> Throws if an unsupported file is supplied. </exception>
-        public static IEnumerable<Data>? GetDataFromFile(string filePath)
+        public override IEnumerable<Data>? GetDataFromFile()
         {
-            var fileUtility = new FileUtility(new FileSystem());
             IEnumerable<Data>? dataList;
 
-            var fileContent = fileUtility.GetContent(filePath);
+            var fileContent = FileUtility.GetContent(FilePath);
 
-            switch (fileUtility.GetExtension(filePath))
+            switch (FileUtility.GetExtension(FilePath))
             {
                 case FileExtensions.Csv:
                     dataList = new CsvContentParser().Parse(fileContent);

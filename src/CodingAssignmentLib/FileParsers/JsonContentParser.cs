@@ -1,10 +1,5 @@
 ﻿using CodingAssignmentLib.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace CodingAssignmentLib.FileParsers
 {
@@ -18,9 +13,14 @@ namespace CodingAssignmentLib.FileParsers
         /// </summary>
         /// <param name="content"> The contents of the .json file. </param>
         /// <returns> Parsed data from the .json file as a collection of <see cref="Data"/>. </returns>
-        public IEnumerable<Data> Parse(string content)
+        public IEnumerable<Data>? Parse(string content)
         {
-            return JsonSerializer.Deserialize<List<Data>>(content);
+            if (string.IsNullOrWhiteSpace(content))
+            {
+                return null;
+            }
+
+            return JsonSerializer.Deserialize<IEnumerable<Data>>(content);
         }
     }
 }

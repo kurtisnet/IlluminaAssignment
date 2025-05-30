@@ -1,32 +1,38 @@
 ﻿using CodingAssignmentLib.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CodingAssignmentLib
 {
     /// <summary>
     /// Handles finding a keyword across all the files in a given directory.
     /// </summary>
-    public static class KeywordFinder
+    public class KeywordFinder : KeywordFinderBase
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="KeywordFinder"/> class.
+        /// </summary>
+        /// <param name="directoryPath"> The full path to the directory in which data files exist. </param>
+        public KeywordFinder(string directoryPath) : base(directoryPath)
+        {
+        }
+
         /// <summary>
         /// Finds files containing a full or partial match of the given keyword and returns the result as a
         /// dictionary where the key is the file path and the value is the list of matches. The keyword
         /// search is also not case-sensitive.
         /// </summary>
-        /// <param name="directory"> The path to the directory containing files to search. </param>
         /// <param name="keyword"> The keyword to look for. </param>
         /// <returns> Dictionary where the key is the file path and the value is a list of matching
-        /// <see cref="Data"/> for the given keyword. </returns>
-        public static Dictionary<string, List<Data>> FindFilesWithKeyword(
-            string directory,
-            string keyword)
+        /// <see cref="Data"/> for the given keyword. Returns an empty dictionary if no results are found.
+        /// </returns>
+        public override Dictionary<string, List<Data>> FindFilesWithKeyword(string keyword)
         {
-            var filePaths = FolderUtility.GetAllFiles(directory);
+            var filePaths = FindFilesInDirectory();
             var result = new Dictionary<string, List<Data>>();
+
+            if (string.IsNullOrWhiteSpace(keyword))
+            {
+                return result;
+            }
 
             foreach (var filePath in filePaths)
             {
@@ -34,7 +40,7 @@ namespace CodingAssignmentLib
 
                 try
                 {
-                    dataList = FileParsingHandler.GetDataFromFile(filePath);
+                    dataList = GetDataFromFile(filePath);
                 }
                 catch (Exception)
                 {
@@ -42,23 +48,14 @@ namespace CodingAssignmentLib
                     continue;
                 }
 
-                if (dataList != null)
-                {
-                    var matchingData = dataList.FirstOrDefault(i =>
-                        i.Key != null &&
-                        i.Key.StartsWith(keyword, StringComparison.OrdinalIgnoreCase));
+                var matchingDatasets = TryGetMatchingDatasets(
+                    dataList,
+                    keyword,
+                    StringComparison.OrdinalIgnoreCase);
 
-                    if (matchingData != null)
-                    {
-                        if (result.TryGetValue(filePath, out var existingDataList))
-                        {
-                            existingDataList.Add(matchingData);
-                        }
-                        else
-                        {
-                            result[filePath] = new List<Data>() { matchingData };
-                        }
-                    }
+                if (matchingDatasets != null)
+                {
+                    result[filePath] = matchingDatasets.ToList();
                 }
             }
 

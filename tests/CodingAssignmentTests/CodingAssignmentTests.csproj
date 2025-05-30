@@ -21,10 +21,16 @@
     </ItemGroup>
 
     <ItemGroup>
+      <None Update="TestFiles\TestCsvFile.csv">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
       <None Update="TestFiles\TestJsonFile.json">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
       <None Update="TestFiles\TestXMLFile.xml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="TestFiles\UnsupportedFile.txt">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
     </ItemGroup>

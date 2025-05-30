@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CodingAssignmentLib
+﻿namespace CodingAssignmentLib
 {
     /// <summary>
     /// Handles folder related utilities.
@@ -31,7 +25,7 @@ namespace CodingAssignmentLib
         /// Null otherwise. </returns>
         public static string? FindFileInDirectory(string folderPath, string fileName)
         {
-            return GetAllFiles(folderPath).FirstOrDefault(f => Path.GetFileName(fileName) == fileName);
+            return GetAllFiles(folderPath).FirstOrDefault(f => Path.GetFileName(f) == fileName);
         }
     }
 }
